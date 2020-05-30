@@ -3,6 +3,11 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
+#define WIDTH 6144
+#define HEIGHT 4608
+#define FPS 60
+#define TP 0.4
+
 using namespace cv;
 
 // enum to describe location of face
@@ -19,9 +24,9 @@ int main(int argc, char** argv)
 	// not used in this case as source video may be raw (without defined dimensions)
 //	Size S = Size((int) source_video.get(CAP_PROP_FRAME_WIDTH),    // Acquire input size
 //                  (int) source_video.get(CAP_PROP_FRAME_HEIGHT));
-	Size t = Size(6144,4608);	
+	Size t = Size(WIDTH, HEIGHT);	
 	VideoWriter output_video;
-	output_video.open("output.avi", ex, 60, t, true);
+	output_video.open("output.avi", ex, FPS, t, true);
 
 	// int face_size = source_video.get(CAP_PROP_FRAME_HEIGHT) / 3;
 	int face_size = 1536;
@@ -61,7 +66,7 @@ int main(int argc, char** argv)
 			for(int col = 0; col < 4; col++){
 				if(!((row == 0 || row == 2) && !(col == 1))){
 					src(Rect(face_size*col, face_size*row, face_size, face_size)).copyTo(face);
-					tspform((Face) num, face, 0.4, end_faces[num]);
+					tspform((Face) num, face, TP, end_faces[num]);
 					num++;
 				}
 			}
