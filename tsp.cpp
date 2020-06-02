@@ -36,7 +36,7 @@ int main(int argc, char** argv)
 	}
 	output_video.open(video_name, ex, FPS, t, true);
 	// int face_size = source_video.get(CAP_PROP_FRAME_HEIGHT) / 3;
-	int face_size = 1536;
+	int face_size = HEIGHT / 3;
 	Mat src, dst;
 	Mat face;
 
@@ -120,7 +120,7 @@ void tspform(Face face_type, Mat& face_mat, float trunc_param, Mat& dest_mat)
 	// this line is independent of cols or rows used, as face guaranteed to be square
 	int max_offset = (int) (0.5*(face_mat.rows)*(1 - trunc_param)); 
 	// the maximum index of pixels in the face
-	int face_edge = 1536;//face_mat.cols; 
+	int face_edge = face_mat.cols; 
 
 	// get the appropriate transform
 	Point2f input_quad[4];
