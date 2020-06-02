@@ -7,6 +7,8 @@
 #define HEIGHT 4608
 #define FPS 60
 #define TP 0.4
+// set REVERT to 1 and recompile for TSP-->CMP conversion
+#define REVERT 0
 
 using namespace cv;
 
@@ -24,10 +26,15 @@ int main(int argc, char** argv)
 	// not used in this case as source video may be raw (without defined dimensions)
 //	Size S = Size((int) source_video.get(CAP_PROP_FRAME_WIDTH),    // Acquire input size
 //                  (int) source_video.get(CAP_PROP_FRAME_HEIGHT));
-	Size t = Size(WIDTH, HEIGHT);	
+	Size t = Size(WIDTH, HEIGHT);
 	VideoWriter output_video;
-	output_video.open("output.avi", ex, FPS, t, true);
-
+	String video_name;
+	if(REVERT){
+		video_name = "revert.avi";
+	} else {
+		video_name = "output.avi";
+	}
+	output_video.open(video_name, ex, FPS, t, true);
 	// int face_size = source_video.get(CAP_PROP_FRAME_HEIGHT) / 3;
 	int face_size = 1536;
 	Mat src, dst;
@@ -122,7 +129,11 @@ void tspform(Face face_type, Mat& face_mat, float trunc_param, Mat& dest_mat)
 	get_transform(BASE, max_offset, face_edge, input_quad);
 
 	// warp the square image
-	warpPerspective(face_mat, dest_mat, getPerspectiveTransform(input_quad, output_quad), dest_mat.size());    	 	
+	if(REVERT){
+		warpPerspective(face_mat, dest_mat, getPerspectiveTransform(output_quad, input_quad), dest_mat.size());	
+	} else {
+		warpPerspective(face_mat, dest_mat, getPerspectiveTransform(input_quad, output_quad), dest_mat.size());    	 	
+	}
 }
 
 void get_transform(Face face_type, int max_offset, int face_edge, Point2f* output_quad) {
