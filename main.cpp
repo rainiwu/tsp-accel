@@ -1,7 +1,5 @@
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/imgproc.hpp>
 #include <stdlib.h>
 #include <iostream>
 
@@ -67,8 +65,8 @@ int main(int argc, char** argv)
 	{
 		source_video >> src;
 		if(src.empty()){
-			cout << endl << frame - 1 << " frames of " << face_size*4 << "x" << face_size*3 
-				<< " video processed at " << FPS << " fps" << endl;
+			cout << endl << "processed " << frame - 1 << " frames of " << face_size*4 << "x" 
+				<< face_size*3 << " video at " << FPS << " fps" << endl;
 			break;
 		}
 		
