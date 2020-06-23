@@ -2,27 +2,48 @@
 #include <opencv2/videoio.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <stdlib.h>
+#include <iostream>
+#include <ctime>
 
 #include "tsp.hpp"
 
-#define WIDTH 6144
-#define HEIGHT 4608
 #define FPS 60
-#define TP 0.4
 // set REVERT to 1 and recompile for TSP-->CMP conversion
-#define REVERT 1
+#define REVERT 0
+#define HELP "unexpected argument\nexpected: ./tsp <input_name> <TP>"
 
 using namespace cv;
+using namespace std;
 
 // main functionality of tsp-accel: takes a CMP video and converts to TSP or vice versa.
 int main(int argc, char** argv)
 {
+	// checking for valid arguments
+	if(argc != 3){ 
+		cout << HELP << endl; 
+		return -1;
+	}
+
+	// checking for a valid TP value
+	if(!(atof(argv[2]) > 0 && atof(argv[2]) < 1)) {
+		cout << HELP << endl << "invalid TP value" << endl;
+		return -1;
+	}
+	float TP = atof(argv[2]); 
+
+	// opening video
 	VideoCapture source_video(argv[1]);
+	if (!source_video.isOpened()) {
+		cout << "could not open input video: " << argv[1] << endl;
+		return -1;
+	}
+
 	int ex = static_cast<int>(source_video.get(CAP_PROP_FOURCC));
-	// not used in this case as source video may be raw (without defined dimensions)
-//	Size S = Size((int) source_video.get(CAP_PROP_FRAME_WIDTH),    // Acquire input size
-//                  (int) source_video.get(CAP_PROP_FRAME_HEIGHT));
-	Size t = Size(WIDTH, HEIGHT);
+	
+	Size t = Size((int) source_video.get(CAP_PROP_FRAME_WIDTH), 
+			(int) source_video.get(CAP_PROP_FRAME_HEIGHT));
+
 	VideoWriter output_video;
 	String video_name;
 	if(REVERT){
@@ -30,40 +51,32 @@ int main(int argc, char** argv)
 	} else {
 		video_name = "output.avi";
 	}
+
+	cout << "creating " << video_name << endl;
+
 	output_video.open(video_name, ex, FPS, t, true);
-	// int face_size = source_video.get(CAP_PROP_FRAME_HEIGHT) / 3;
-	int face_size = HEIGHT / 3;
+	int face_size = ((int) source_video.get(CAP_PROP_FRAME_HEIGHT)) / 3;
 	Mat src, dst;
 	Mat face;
 
 	// blank face for unpacked layout
 	Mat blank(face_size, face_size, CV_8UC3, Scalar(0,0,0));
-	//Mat map[2][3];
 	Mat end_faces[6]; 
-	//Mat concat[3];
 	Mat concat[5];
+	int frame = 1;
+	clock_t time = clock();
 	for(;;)
 	{
 		source_video >> src;
-		if(src.empty()) break;
-		
-//		face = src(Rect(0,0, 200, 200));
-		/** // loop for packed cubemap
-		for(int k = 0; k < 2; k++){
-			for(int j = 0; j < 3; j++){
-				src(Rect(face_size*j,face_size*k, face_size, face_size)).copyTo(face);
-				tspform( (Face) (j + (k*3)), face, 0.4, map[k][j]);
-			}
+		if(src.empty()){
+			time = clock() - time;
+			cout << endl << "video processed in " << (float)time/CLOCKS_PER_SEC << " seconds" << endl;
+			break;
 		}
-		// concantations of the map for 3x2 layout
-		hconcat(map[0][0], map[0][1], concat[0]);
-		hconcat(concat[0], map[0][2], concat[1]);
-		hconcat(map[1][0], map[1][1], concat[0]);
-		hconcat(concat[0], map[1][2], concat[2]);
-		vconcat(concat[1], concat[2], dst); 
-		**/
-		// concats of the map for unpacked layout
-			
+		
+		cout << "\r" << "processing frame " << frame++ << flush;
+
+		// extracting faces and feeding into tspform
 		int num = 0;
 		for(int row = 0; row < 3; row++){
 			for(int col = 0; col < 4; col++){

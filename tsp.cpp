@@ -9,6 +9,7 @@ using namespace cv;
 //enum Face { LEFT, BASE, RIGHT, BOTTOM, BACK, TOP };
 enum Face {TOP, LEFT, BASE, RIGHT, BACK, BOTTOM};
 
+// passes by reference the requested transform matrix
 void get_transform(Face face_type, int max_offset, int face_edge, Point2f* output_quad) {
 	switch(face_type) {
 		case BASE:
@@ -49,8 +50,10 @@ void get_transform(Face face_type, int max_offset, int face_edge, Point2f* outpu
 			break;
 	}
 }
+
 // function to form tsp for a specific face
 // takes the face type, face image, and truncation parameter
+// also takes a boolean revert flag to allow reversions when appropriate
 void tspform(Face face_type, Mat& face_mat, float trunc_param, Mat& dest_mat, bool revert)
 {
 	// this line is independent of cols or rows used, as face guaranteed to be square
