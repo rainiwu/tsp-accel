@@ -4,7 +4,6 @@
 #include <opencv2/imgproc.hpp>
 #include <stdlib.h>
 #include <iostream>
-#include <ctime>
 
 #include "tsp.hpp"
 
