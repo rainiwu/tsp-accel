@@ -64,13 +64,12 @@ int main(int argc, char** argv)
 	Mat end_faces[6]; 
 	Mat concat[5];
 	int frame = 1;
-	clock_t time = clock();
 	for(;;)
 	{
 		source_video >> src;
 		if(src.empty()){
-			time = clock() - time;
-			cout << endl << "video processed in " << (float)time/CLOCKS_PER_SEC << " seconds" << endl;
+			cout << endl << frame - 1 << " frames of " << face_size*4 << "x" << face_size*3 
+				<< " video processed at " << FPS << " fps" << endl;
 			break;
 		}
 		
