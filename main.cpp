@@ -23,7 +23,7 @@ int main(int argc, char** argv)
 	}
 
 	// checking for a valid TP value
-	if(!(atof(argv[2]) > 0 && atof(argv[2]) < 1)) {
+	if(!(atof(argv[2]) > 0 && atof(argv[2]) <= 1)) {
 		cout << HELP << endl << "invalid TP value" << endl;
 		return -1;
 	}
