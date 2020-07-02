@@ -17,28 +17,28 @@ void get_transform(Face face_type, int max_offset, int face_edge, Point2f* outpu
 			output_quad[3] = Point2f( face_edge, face_edge ); // bottom right
 			break;
 		case LEFT:
-			output_quad[0] = Point2f( 0, max_offset ); // tl
+			output_quad[0] = Point2f( 2*max_offset, max_offset ); // tl
 			output_quad[1] = Point2f( face_edge, 0 ); // tr
-			output_quad[2] = Point2f( 0, face_edge - max_offset ); // bl
+			output_quad[2] = Point2f( 2*max_offset, face_edge - max_offset ); // bl
 			output_quad[3] = Point2f( face_edge , face_edge); // br
 			break;
 		case RIGHT:
 			output_quad[0] = Point2f( 0, 0 ); // tl
-			output_quad[1] = Point2f( face_edge, max_offset ); // tr
+			output_quad[1] = Point2f( face_edge-2*max_offset, max_offset ); // tr
 			output_quad[2] = Point2f( 0, face_edge ); // bl
-			output_quad[3] = Point2f( face_edge, face_edge - max_offset ); // br
+			output_quad[3] = Point2f( face_edge-2*max_offset, face_edge - max_offset ); // br
 			break;
 		case TOP:
-			output_quad[0] = Point2f( max_offset, 0 ); // tl
-			output_quad[1] = Point2f( face_edge - max_offset, 0 ); // tr
+			output_quad[0] = Point2f( max_offset, 2*max_offset ); // tl
+			output_quad[1] = Point2f( face_edge - max_offset, 2*max_offset ); // tr
 			output_quad[2] = Point2f( 0, face_edge ); // bl
 			output_quad[3] = Point2f( face_edge, face_edge ); // br
 			break;
 		case BOTTOM:
 			output_quad[0] = Point2f( 0, 0 ); // tl
 			output_quad[1] = Point2f( face_edge, 0 ); // tr
-			output_quad[2] = Point2f( max_offset, face_edge ); // bl
-			output_quad[3] = Point2f( face_edge - max_offset, face_edge ); // br
+			output_quad[2] = Point2f( max_offset, face_edge-2*max_offset ); // bl
+			output_quad[3] = Point2f( face_edge - max_offset, face_edge-2*max_offset ); // br
 			break;
 		case BACK:
 			output_quad[0] = Point2f( 0, max_offset ); // tl
