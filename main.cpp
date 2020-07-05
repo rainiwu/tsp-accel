@@ -7,10 +7,10 @@
 
 #define FPS 25
 // set REVERT to 1 and recompile for TSP-->CMP conversion
-#define REVERT 0
+//#define REVERT 0
 // PACKING to 0 for CMP, 1 for RCMP
-#define PACKING 0
-#define HELP "unexpected argument\nexpected: ./tsp <input_name> <TP>"
+#define PACKING 1
+#define HELP "unexpected argument\nexpected: ./tsp <input_name> <TP> <chunk_id> <revert>"
 
 using namespace cv;
 using namespace std;
@@ -19,17 +19,23 @@ using namespace std;
 int main(int argc, char** argv)
 {
 	// checking for valid arguments
-	if(argc != 3){ 
+	if(argc != 5){ 
 		cout << HELP << endl; 
 		return -1;
 	}
 
 	// checking for a valid TP value
-	if(!(atof(argv[2]) > 0 && atof(argv[2]) <= 1)) {
+	if(!(atof(argv[2]) > 0 && atof(argv[2]) <= 10)) {
 		cout << HELP << endl << "invalid TP value" << endl;
 		return -1;
 	}
-	float TP = atof(argv[2]); 
+	float TP = atoi(argv[2])/10.0; 
+
+	// chunk id argument
+	int chunk_id = atoi(argv[3]);
+
+	// revert bool
+	int REVERT = atoi(argv[4]);
 
 	// opening video
 	VideoCapture source_video(argv[1]);
@@ -46,9 +52,12 @@ int main(int argc, char** argv)
 	VideoWriter output_video;
 	String video_name;
 	if(REVERT){
-		video_name = "revert.mkv";
+		video_name = "./tsp_rec/tsp"+to_string(chunk_id)+to_string(int(TP*10))+"0_rec.avi";
 	} else {
-		video_name = "output.mkv";
+		if (TP!=1)
+			video_name = "./tsp_all/tsp"+to_string(chunk_id)+to_string(int(TP*10))+"0.avi";
+		else
+			video_name = "./cmp_all/cmp"+to_string(chunk_id)+"0.avi";
 	}
 
 	cout << "creating " << video_name << endl;
@@ -134,5 +143,6 @@ int main(int argc, char** argv)
 		}
 		output_video.write(dst);
 	}
+	cout << ex << endl;
 	return 0;
 }
