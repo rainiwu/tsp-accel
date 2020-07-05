@@ -67,9 +67,9 @@ void tspform(Face face_type, Mat& face_mat, float trunc_param, Mat& dest_mat, bo
 
 	// warp the square image
 	if(revert){
-		warpPerspective(face_mat, dest_mat, getPerspectiveTransform(output_quad, input_quad), dest_mat.size());	
+		warpPerspective(face_mat, dest_mat, getPerspectiveTransform(output_quad, input_quad), dest_mat.size(), INTER_NEAREST, BORDER_REPLICATE);	
 	} else {
-		warpPerspective(face_mat, dest_mat, getPerspectiveTransform(input_quad, output_quad), dest_mat.size());    	 	
+		warpPerspective(face_mat, dest_mat, getPerspectiveTransform(input_quad, output_quad), dest_mat.size(), INTER_NEAREST, BORDER_REPLICATE);    	 	
 	}
 }
 

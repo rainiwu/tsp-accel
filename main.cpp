@@ -9,7 +9,7 @@
 // set REVERT to 1 and recompile for TSP-->CMP conversion
 #define REVERT 0
 // PACKING to 0 for CMP, 1 for RCMP
-#define PACKING 1
+#define PACKING 0
 #define HELP "unexpected argument\nexpected: ./tsp <input_name> <TP>"
 
 using namespace cv;
