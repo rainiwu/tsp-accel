@@ -1,5 +1,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/highgui.hpp>
 #include <stdlib.h>
 #include <iostream>
 
@@ -8,9 +10,9 @@
 #define FPS 25
 // PACKING to 0 for CMP, 1 for RCMP
 // Note: RCMP only functions for TP = 1 at the moment
-#define PACKING 0
+#define PACKING 1
 // DEBUG changes 
-#define DEBUG 0
+#define DEBUG 1
 #define HELP "unexpected argument\nexpected: ./tsp <input_name> <TP> <chunk_id> <revert>"
 
 using namespace cv;
@@ -44,12 +46,12 @@ int main(int argc, char** argv)
 		cout << "could not open input video: " << argv[1] << endl;
 		return -1;
 	}
-
 	int ex = static_cast<int>(source_video.get(CAP_PROP_FOURCC));
-	
+
 	Size t = Size((int) source_video.get(CAP_PROP_FRAME_WIDTH), 
 			(int) source_video.get(CAP_PROP_FRAME_HEIGHT));
 
+	/**
 	VideoWriter output_video;
 	String video_name;
 	if(!DEBUG){
@@ -62,14 +64,19 @@ int main(int argc, char** argv)
 				video_name = "./cmp_all/cmp"+to_string(chunk_id)+"0.avi";
 		}
 	} else { 
-		if(!REVERT) video_name = "output.mkv";
-		else video_name = "revert.mkv";
+		if(!REVERT) video_name = "output.avi";
+		else video_name = "revert.avi";
 	}
 
 	cout << "creating " << video_name << endl;
 
-	output_video.open(video_name, ex, FPS, t, true);
-	
+	output_video.open(video_name, VideoWriter::fourcc('F','F','V','1'), FPS, t, true);
+	**/	
+	String video_name;
+	if(!REVERT) video_name = "./output/output";
+	else video_name = "./revert/revert";
+
+
 	int face_size;
 	switch(PACKING){
 		case 0:
@@ -93,8 +100,8 @@ int main(int argc, char** argv)
 	{
 		source_video >> src;
 		if(src.empty()){
-			cout << endl << "processed " << frame - 1 << " frames of " << face_size*4 << "x" 
-				<< face_size*3 << " video at " << FPS << " fps" << endl;
+	//		cout << endl << "processed " << frame - 1 << " frames of " << face_size*4 << "x" 
+//				<< face_size*3 << " video at " << FPS << " fps" << endl;
 			break;
 		}
 		
@@ -147,7 +154,11 @@ int main(int argc, char** argv)
 			vconcat(concat[0], concat[1], dst);
 			break;
 		}
-		output_video.write(dst);
+		//output_video.write(dst);
+		ostringstream out;
+		out << video_name << frame << ".png";
+		imwrite(out.str(), dst);
+
 	}
 	return 0;
 }
